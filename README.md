@@ -27,3 +27,15 @@ To set up the environment, follow these steps:
    rapids=25.10 python=3.11 'cuda-version>=12.0,<=12.9' \
    jupyterlab 'pytorch=*=*cuda*'
    ```
+4. Activate the environment:
+   ```bash
+   conda activate dann
+   ```
+5. Run the main script:
+   ```bash
+   python src/main.py
+   ```
+
+## Usage
+
+To train and evaluate the dANN model, modify the parameters in `src/main.py` as needed. You can adjust hyperparameters such as learning rate, batch size, number of epochs, and model architecture.
