@@ -200,6 +200,7 @@ class DANN(nn.Module):
         )
 
     def forward(self, x):
+        x = x.view(x.size(0), -1)
         for j in range(1, self.num_layers + 1):
             dend = self.layers[f"dend_{j}"](x)
             dend = F.leaky_relu(dend, negative_slope=self.relu_slope)

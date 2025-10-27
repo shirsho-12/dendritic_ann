@@ -30,11 +30,14 @@ class Trainer:
             shuffle=shuffle,
             perturb=perturb,
         )
+        input_dim = self.dataloader.dataset[0][0].shape[1:]  # type: ignore
+        num_classes = len(self.dataloader.dataset.classes)  # type: ignore
+        self.dataset_name = dataset_name
         self.model: nn.Module = DANN(
-            input_dim=(28, 28),
+            input_dim=input_dim,
             dends=[128, 64],
             soma=[64, 32],
-            num_classes=10,
+            num_classes=num_classes,
             seed=seed,
         )
         self.criterion = nn.CrossEntropyLoss()

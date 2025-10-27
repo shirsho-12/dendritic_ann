@@ -28,9 +28,9 @@ def get_dataset(
         torch.manual_seed(seed)
 
     transform_list = []
+    transform_list.append(transforms.ToTensor())
     if add_noise and sigma is not None:
         transform_list.append(GaussianNoise(0.0, sigma))
-    transform_list.append(transforms.ToTensor())
     if perturb:
         transform_list.append(
             transforms.Lambda(lambda x: x + 0.1 * torch.randn_like(x))
