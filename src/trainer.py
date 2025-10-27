@@ -32,7 +32,9 @@ class Trainer:
         )
         input_dim = self.dataloader.dataset[0][0].shape[1:]  # type: ignore
         num_classes = len(self.dataloader.dataset.classes)  # type: ignore
+        print(f"Dataset classes: {self.dataloader.dataset.classes}")  # type: ignore
         self.dataset_name = dataset_name
+        print(f"Input dimension: {input_dim}, Number of classes: {num_classes}")
         self.model: nn.Module = DANN(
             input_dim=input_dim,
             dends=[128, 64],
@@ -47,6 +49,15 @@ class Trainer:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
 
+    def kmnist_output_remap(self, outputs: torch.Tensor) -> torch.Tensor:
+        classes = ["o", "ki", "su", "tsu", "na", "ha", "ma", "ya", "re", "wo"]
+        remap = {i: classes.index(c) for i, c in enumerate(classes)}
+        remapped_outputs = torch.zeros_like(outputs)
+        for i in range(outputs.size(0)):
+            for j in range(outputs.size(1)):
+                remapped_outputs[i, remap[j]] = outputs[i, j]
+        return remapped_outputs
+
     def train(self, num_epochs: int):
         self.model.train()
         for epoch in range(1, num_epochs + 1):
@@ -55,10 +66,13 @@ class Trainer:
                 data, target = data.to(self.device), target.to(self.device)
                 self.optimizer.zero_grad()
                 output = self.model(data)
+                if self.dataset_name == "kmnist":
+                    output = self.kmnist_output_remap(output)
                 loss = self.criterion(output, target)
                 loss.backward()
                 self.optimizer.step()
             print(f"Epoch {epoch} completed. Loss: {loss.item():.4f}")
+            self.evaluate()
 
     def evaluate(self) -> float:
         self.model.eval()
@@ -68,6 +82,8 @@ class Trainer:
             for data, target in self.dataloader:
                 data, target = data.to(self.device), target.to(self.device)
                 output = self.model(data)
+                if self.dataset_name == "kmnist":
+                    output = self.kmnist_output_remap(output)
                 _, predicted = torch.max(output.data, 1)
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
