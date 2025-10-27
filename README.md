@@ -4,10 +4,11 @@ This repository contains code and resources for implementing Dendritic Artificia
 
 This implementation fixes issues from [the original dANN codebase](https://github.com/Poirazi-Lab/dendritic_anns), including:
 
-- [ ] Pytorch version requiring Keras.
-- [ ] RAPIDS compatibility issues.
-- [ ] Refactorings for better readability and maintainability.
+- [x] Pytorch version requiring Keras.
+- [x] RAPIDS compatibility issues.
+- [x] Refactorings for better readability and maintainability.
 - [ ] Efficiency improvements in applying receptive fields.
+- [ ] KMNIST dataset support.
 
 ## Setup
 
